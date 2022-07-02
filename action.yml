@@ -1,0 +1,42 @@
+name: Test
+description: Test koishi plugins
+inputs:
+  node-version:
+    default: '16'
+    required: false
+    description: Node.js version to use
+  test:
+    default: 'yarn test'
+    required: false
+    description: Test command, default is 'yarn test'
+  install-peer:
+    default: 'koishi'
+    required: false
+    description: Peer dependency to install
+
+runs:
+  using: composite
+
+  steps:
+    - uses: actions/setup-node@v3
+      with:
+        node-version: ${{ inputs.node-version }}
+    - name: Upgrade yarn
+      shell: bash
+      run: |
+        yarn set version stable
+        yarn config set nodeLinker node-modules
+    - name: Install dependencies
+      shell: bash
+      env:
+       YARN_ENABLE_IMMUTABLE_INSTALLS: "false"
+      run: |
+        yarn install
+        yarn add --dev ${{ inputs.install-peer }}
+    - name: Build
+      shell: bash
+      run: yarn build
+    - name: Test
+      shell: bash
+      run: |
+        ${{ inputs.test }} 

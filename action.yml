@@ -2,7 +2,7 @@ name: Test
 description: Test koishi plugins
 inputs:
   node-version:
-    default: '16'
+    default: '18'
     required: false
     description: Node.js version to use
   test:
